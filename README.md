@@ -4,6 +4,15 @@
 **Trabajo Práctico Final — Series Temporales · Maestría en Inteligencia Artificial**
 **Autor:** Federico D. Morán Fretes
 
+> ℹ️ **Origen de este trabajo.** Este Trabajo Práctico Final **toma como base un artículo científico —de
+> autoría propia— que actualmente se encuentra en período de revisión en la conferencia IBERAMIA**
+> (*Event-Centered Short-Term Forecasting of Urban Stream Levels: Comparing Statistical, Machine Learning,
+> and Deep Learning Models in the Mburicao Stream*). El repositorio reutiliza ese proyecto de
+> investigación como punto de partida; por ese motivo, los notebooks de la carpeta [`notebooks/`](notebooks/)
+> conservan parte del **desorden propio del proyecto original** (rutas de distintos entornos, nombres de
+> experimentos, iteraciones) y se incluyen únicamente como registro de trazabilidad. El análisis
+> reproducible del TPF vive en [`src/`](src/).
+
 > **Resumen.** El pronóstico a corto plazo del nivel de agua en arroyos urbanos es relevante para
 > la alerta temprana, porque una lluvia intensa puede producir una respuesta hidrológica rápida en
 > pocos minutos. Sin embargo, las métricas promedio pueden ocultar si un modelo es útil durante los
@@ -81,7 +90,18 @@ sola serie. El hueco entre 2022 y 2025 no contiene observaciones y unir ambos pe
 continuidad artificial de varios años. Por eso toda la construcción de ventanas, la ingeniería de
 features y la evaluación se hacen **dentro de cada segmento**.
 
-![Serie de nivel y precipitación por segmento](results/figures/eda_series_segmentos.png)
+<p align="center">
+  <img src="results/figures/paper_fig_01a_segment_2021_series_zoom_vector.png" width="88%"><br>
+  <em><strong>(a)</strong> Período 2021–2022.</em>
+</p>
+<p align="center">
+  <img src="results/figures/paper_fig_01b_segment_2025_series_zoom_vector.png" width="88%"><br>
+  <em><strong>(b)</strong> Período 2025–2026.</em>
+</p>
+
+*Figura 1. Registros de nivel de agua y precipitación de las dos campañas. En cada subfigura, el panel
+superior muestra el registro completo de nivel con un recuadro que amplía el evento principal, y el panel
+inferior la precipitación acumulada de 10 minutos.*
 
 ### 2.1 Dinámica de lluvia–respuesta
 
@@ -263,6 +283,18 @@ calma**.
 
 ![Diagnóstico de residuales del LSTM](results/figures/residuales_lstm_t30.png)
 
+**Cómo leer el panel (c) — autocorrelación de residuales.** La función de autocorrelación (ACF) mide
+cuánto se parece el residual de un instante a los residuales de instantes anteriores, para rezagos
+crecientes (cada rezago = 1 paso de 10 min). Si los errores del modelo fueran *ruido blanco* ideal —sin
+estructura temporal aprovechable— todas las barras caerían dentro de la banda de significancia del 95 %
+(líneas rojas punteadas, $\pm 1.96/\sqrt{n}$). En cambio se observa una **autocorrelación alta en los
+primeros rezagos** (≈0.8 en el rezago 1, es decir 10 min), lo que indica que **errores consecutivos son
+parecidos**: cuando el modelo se equivoca, tiende a seguir equivocándose en la misma dirección durante
+varios pasos. El repunte alrededor de los rezagos 20–35 (≈3.5–6 h) refleja la duración típica de los
+episodios de crecida. En la práctica, esto significa que **el LSTM no captura toda la dinámica
+temporal**: queda estructura sin modelar en los residuales, concentrada justamente en los eventos, lo
+que refuerza el enfoque centrado en eventos de este trabajo.
+
 La distribución de residuales por modelo confirma los sesgos vistos en las tablas: LSTM y persistencia
 están centrados en cero, mientras que ARIMA, SARIMAX y Ridge-ARX tienden a subestimar (sesgo positivo)
 y N-BEATS a sobreestimar (sesgo negativo) fuera de los eventos.
@@ -275,7 +307,7 @@ y N-BEATS a sobreestimar (sesgo negativo) fuera de los eventos.
 
 | Visualización | Archivo | Sección |
 |---|---|---|
-| Serie temporal original (nivel + lluvia) | `results/figures/eda_series_segmentos.png` | 2 |
+| Serie temporal original (nivel + lluvia) | `results/figures/paper_fig_01a/01b_segment_*_series_zoom_vector.png` | 2 |
 | Análisis lluvia–respuesta | `results/figures/paper_fig_03a/03b_*.png` | 2.1 |
 | Comparación de modelos (RMSE / NSE) | `results/figures/24_metricas_globales_rmse_nse.png` | 5.1 |
 | Degradación por horizonte | `results/figures/24_rmse_por_horizonte_global.png` | 5.2 |
@@ -363,8 +395,9 @@ los valores reportados en la Sección 5.
 ## 10. Origen del trabajo y créditos
 
 Este Trabajo Práctico Final se basa en investigación propia del autor: el estudio del arroyo Mburicaó
-desarrollado en el marco de su tesis de maestría y presentado como artículo científico en el congreso
-**IBERAMIA** (*Event-Centered Short-Term Forecasting of Urban Stream Levels*). El presente repositorio
+desarrollado en el marco de su tesis de maestría y **sometido, actualmente en período de revisión, como
+artículo científico a la conferencia IBERAMIA** (*Event-Centered Short-Term Forecasting of Urban Stream
+Levels*). El presente repositorio
 reorganiza y documenta ese trabajo en español para la cátedra de Series Temporales, reutilizando los
 modelos ya entrenados, sus predicciones y las figuras del artículo. Los datos de monitoreo del arroyo
 Mburicaó provienen del esfuerzo de monitoreo local asociado a dicho proyecto.

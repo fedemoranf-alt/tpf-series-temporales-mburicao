@@ -21,6 +21,7 @@ from __future__ import annotations
 from pathlib import Path
 
 import matplotlib.pyplot as plt
+from matplotlib.colors import LinearSegmentedColormap
 import numpy as np
 import pandas as pd
 
@@ -49,21 +50,25 @@ def diagnostico_lstm(df_t30: pd.DataFrame) -> None:
 
     fig, ax = plt.subplots(2, 2, figsize=(12, 8))
 
-    # (a) Histograma
-    ax[0, 0].hist(lstm["residual_cm"], bins=80, color="#1f4e79", alpha=0.85)
+    # (a) Histograma (eje x acotado al rango con datos, recortando colas extremas)
+    lo, hi = lstm["residual_cm"].quantile([0.01, 0.99])
+    ax[0, 0].hist(lstm["residual_cm"], bins=80, range=(lo, hi),
+                  color="#1f4e79", alpha=0.85)
+    ax[0, 0].set_xlim(lo, hi)
     ax[0, 0].axvline(0, color="crimson", linestyle="--", linewidth=1)
     ax[0, 0].set_title("(a) Histograma de residuales")
     ax[0, 0].set_xlabel("Residual (cm)")
     ax[0, 0].set_ylabel("Frecuencia")
 
-    # (b) Residual vs nivel predicho
+    # (b) Residual vs nivel predicho (colormap de dos colores + escala log de conteo)
+    cmap_dens = LinearSegmentedColormap.from_list("dens", ["#2c7bb6", "#d7191c"])
     hb = ax[0, 1].hexbin(lstm["pred"], lstm["residual_cm"], gridsize=45,
-                         cmap="Blues", mincnt=1)
-    ax[0, 1].axhline(0, color="crimson", linestyle="--", linewidth=1)
+                         cmap=cmap_dens, bins="log", mincnt=1)
+    ax[0, 1].axhline(0, color="black", linestyle="--", linewidth=1)
     ax[0, 1].set_title("(b) Residual vs nivel predicho")
     ax[0, 1].set_xlabel("Nivel predicho (m)")
     ax[0, 1].set_ylabel("Residual (cm)")
-    fig.colorbar(hb, ax=ax[0, 1], label="conteo")
+    fig.colorbar(hb, ax=ax[0, 1], label="conteo (escala log)")
 
     # (c) Autocorrelacion de residuales (segmento 2025 ordenado en el tiempo)
     s2025 = (lstm[lstm["segmento"] == 2025]
@@ -71,6 +76,10 @@ def diagnostico_lstm(df_t30: pd.DataFrame) -> None:
     valores_acf = acf(s2025["residual_cm"].to_numpy(), nlags=40)
     ax[1, 0].bar(range(len(valores_acf)), valores_acf, color="#2e86c1", width=0.8)
     ax[1, 0].axhline(0, color="black", linewidth=0.8)
+    # Banda de significancia ~95% para ruido blanco (+-1.96/sqrt(n))
+    ci = 1.96 / np.sqrt(len(s2025))
+    ax[1, 0].axhline(ci, color="crimson", linestyle="--", linewidth=0.8)
+    ax[1, 0].axhline(-ci, color="crimson", linestyle="--", linewidth=0.8)
     ax[1, 0].set_title("(c) Autocorrelacion de residuales (segmento 2025)")
     ax[1, 0].set_xlabel("Rezago (pasos de 10 min)")
     ax[1, 0].set_ylabel("ACF")

@@ -46,7 +46,9 @@ Maestría en Inteligencia Artificial
 | 2021–2022 | jun-2021 → abr-2022 | 42 220 | 3.746 | 741.6 |
 | 2025–2026 | ago-2025 → mar-2026 | 29 055 | 3.300 | 325.1 |
 
-![width:820px](../results/figures/eda_series_segmentos.png)
+![width:455px](../results/figures/paper_fig_01a_segment_2021_series_zoom_vector.png) ![width:455px](../results/figures/paper_fig_01b_segment_2025_series_zoom_vector.png)
+
+<span style="font-size:16px">Izq.: período 2021–2022 · Der.: período 2025–2026 (nivel arriba, lluvia abajo, recuadro = evento principal).</span>
 
 ---
 
