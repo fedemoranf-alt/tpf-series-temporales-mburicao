@@ -1,0 +1,6 @@
+# Dependencias del analisis reproducible del TPF.
+# El repositorio NO reentrena modelos: solo carga datos y predicciones ya
+# generadas para calcular metricas y producir figuras.
+pandas>=2.0
+numpy>=1.24
+matplotlib>=3.7
