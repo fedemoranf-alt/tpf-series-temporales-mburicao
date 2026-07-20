@@ -5,11 +5,143 @@ theme: default
 size: 16:9
 header: 'Pronóstico de nivel del arroyo Mburicaó — TPF Series Temporales'
 style: |
-  section { font-size: 24px; }
-  h1 { color: #1f4e79; }
-  h2 { color: #1f4e79; }
-  table { font-size: 20px; margin-left: auto; margin-right: auto; }
-  section.lead h1 { font-size: 40px; }
+  /* Estilo general */
+  section {
+    font-size: 24px;
+  }
+
+  h1 {
+    color: #1f4e79;
+  }
+
+  h2 {
+    color: #1f4e79;
+  }
+
+  table {
+    font-size: 20px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  section.lead h1 {
+    font-size: 40px;
+  }
+
+  /* Figuras centradas horizontalmente */
+  section.figcenter p {
+    text-align: center;
+  }
+
+  section.figcenter img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* Diapositiva con dos tablas */
+  section.dostablas {
+    display: grid;
+
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+
+    grid-template-areas:
+      "titulo titulo"
+      "subtitulo1 subtitulo2"
+      "tabla1 tabla2"
+      "notas notas";
+
+    column-gap: 55px;
+    row-gap: 8px;
+
+    align-content: start;
+    align-items: start;
+
+    padding: 55px 38px 35px 38px;
+  }
+
+  /* Título principal */
+  section.dostablas > h2 {
+    grid-area: titulo;
+
+    font-size: 30px;
+    line-height: 1.15;
+
+    margin: 0 0 12px 0;
+  }
+
+  /* Subtítulos de ambas tablas */
+  section.dostablas > p {
+    width: 82%;
+
+    justify-self: center;
+
+    font-size: 22px;
+    line-height: 1.2;
+  }
+
+  section.dostablas > p:nth-of-type(1) {
+    grid-area: subtitulo1;
+    margin: 0 0 5px 0;
+  }
+
+  section.dostablas > p:nth-of-type(2) {
+    grid-area: subtitulo2;
+    margin: 0 0 5px 0;
+  }
+
+  /* Posición de las tablas */
+  section.dostablas > table:nth-of-type(1) {
+    grid-area: tabla1;
+  }
+
+  section.dostablas > table:nth-of-type(2) {
+    grid-area: tabla2;
+  }
+
+  /* Formato común de las tablas */
+  section.dostablas table {
+    width: 82% !important;
+    max-width: none !important;
+
+    justify-self: center;
+
+    margin: 0 auto !important;
+
+    font-size: 18px;
+    line-height: 1.15;
+
+    table-layout: auto;
+    border-collapse: collapse;
+  }
+
+  section.dostablas th,
+  section.dostablas td {
+    padding: 7px 10px;
+  }
+
+  /* Bloque de conclusiones */
+  section.dostablas > blockquote {
+    grid-area: notas;
+
+    width: 100%;
+    box-sizing: border-box;
+
+    margin: 12px 0 0 0;
+    padding: 3px 0 3px 18px;
+
+    font-size: 16px;
+    line-height: 1.3;
+  }
+
+  section.dostablas > blockquote ul {
+    margin: 0;
+    padding-left: 25px;
+  }
+
+  section.dostablas > blockquote li {
+    margin: 4px 0;
+  }
 ---
 
 <!-- _class: lead -->
@@ -88,10 +220,9 @@ Maestría en Inteligencia Artificial
 
 ---
 
-## 6. Resultados globales y a 30 minutos
+<!-- _class: dostablas -->
 
-<div style="display:flex; gap:20px; font-size:18px;">
-<div>
+## 6. Resultados globales y a 30 minutos
 
 **Todos los horizontes**
 
@@ -105,9 +236,6 @@ Maestría en Inteligencia Artificial
 | GB-ARX | 8.29 | 3.54 | 0.924 |
 | Persistencia | 9.24 | 2.56 | 0.906 |
 
-</div>
-<div>
-
 **Horizonte 30 min**
 
 | Modelo | RMSE | MAPE | NSE |
@@ -120,12 +248,14 @@ Maestría en Inteligencia Artificial
 | ARIMA | 11.08 | 4.72 | 0.865 |
 | Persistencia | 12.16 | 3.49 | 0.837 |
 
-</div>
-</div>
 
-<span style="font-size:18px">RMSE/MAE en **cm**. El **LSTM** domina en RMSE y NSE; la persistencia colapsa a 30 min.</span>
+> - **LSTM** es el único que lidera **RMSE y NSE en los dos cortes**, y su ventaja se **amplía** a 30 min (7.75 vs. 9.21 del segundo).
+> - Al pasar de global a 30 min **se reacomoda el orden**: los estadísticos (SARIMAX, ARIMA) ceden ante ML/DL → **se degradan más rápido con el horizonte**.
+> - El **MAPE contradice** al resto: Persistencia tiene el MAPE más bajo (2.56 %) pero el **peor RMSE y NSE** — está dominado por los períodos de calma y **no ve los picos** (el 13.9 % de N-BEATS es un artefacto de denominadores chicos). **El criterio de decisión acá es RMSE/NSE, no MAPE.**
 
 ---
+
+<!-- _class: figcenter -->
 
 ## 7. Degradación por horizonte de pronóstico
 
@@ -136,16 +266,18 @@ Maestría en Inteligencia Artificial
 
 ---
 
-## 8. ⭐ Aporte principal — Curvas de pronóstico en un evento (30 min)
+<!-- _class: figcenter -->
+
+## 8. Aporte principal — Curvas de pronóstico en un evento (30 min)
 
 - Las métricas globales **no separan** error de **tiempo** del error de **amplitud**.
 - Varios modelos reproducen la forma del hidrograma pero **difieren en tiempo y magnitud** del pico.
 
-![width:760px](../results/figures/paper_fig_11_event_predictions_2025_t30_vector.png)
+![width:1000px](../results/figures/paper_fig_11_event_predictions_2025_t30_vector.png)
 
 ---
 
-## 9. ⭐ Métricas centradas en eventos (peak timing & magnitude)
+## 9. Métricas centradas en eventos (peak timing & magnitude)
 
 10 eventos críticos · horizonte 30 min · errores en cm / min:
 
@@ -163,7 +295,9 @@ Maestría en Inteligencia Artificial
 
 ---
 
-## 10. ⭐ Compromiso timing vs. magnitud
+<!-- _class: figcenter -->
+
+## 10. Compromiso timing vs. magnitud
 
 - El plano de error hace **explícito el compromiso operativo**.
 - El **LSTM no gana ninguna dimensión aislada, pero ocupa la región balanceada** y logra el menor RMSE de evento.
@@ -171,6 +305,8 @@ Maestría en Inteligencia Artificial
 ![width:560px](../results/figures/paper_fig_12_peak_timing_magnitude_tradeoff_t30_vector.png)
 
 ---
+
+<!-- _class: figcenter -->
 
 ## 11. Análisis de residuales (LSTM, 30 min)
 
@@ -203,4 +339,4 @@ Maestría en Inteligencia Artificial
 **Federico D. Morán Fretes**
 TPF — Series Temporales · Maestría en IA
 
-Repositorio: `tpf-series-temporales-mburicao`
+Repositorio: `https://github.com/fedemoranf-alt/tpf-series-temporales-mburicao`
