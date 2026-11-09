@@ -4,14 +4,12 @@
 **Trabajo Práctico Final — Series Temporales · Maestría en Inteligencia Artificial**
 **Autor:** Federico D. Morán Fretes
 
-> ℹ️ **Origen de este trabajo.** Este Trabajo Práctico Final **toma como base un artículo científico —de
-> autoría propia— que actualmente se encuentra en período de revisión en la conferencia IBERAMIA**
-> (*Event-Centered Short-Term Forecasting of Urban Stream Levels: Comparing Statistical, Machine Learning,
-> and Deep Learning Models in the Mburicao Stream*). El repositorio reutiliza ese proyecto de
-> investigación como punto de partida; por ese motivo, los notebooks de la carpeta [`notebooks/`](notebooks/)
-> conservan parte del **desorden propio del proyecto original** (rutas de distintos entornos, nombres de
-> experimentos, iteraciones) y se incluyen únicamente como registro de trazabilidad. El análisis
-> reproducible del TPF vive en [`src/`](src/).
+> ℹ️ **Origen de este trabajo.** Este Trabajo Práctico Final toma como base un artículo propio,
+> **aceptado en IBERAMIA 2026** (Asunción, 18 al 20 de noviembre): *Event-Centered Short-Term
+> Forecasting of Urban Stream Levels: Comparing Statistical, Machine Learning, and Deep Learning
+> Models in the Mburicao Stream*. Los notebooks de la carpeta [`notebooks/`](notebooks/) vienen de
+> ese proyecto de investigación y se incluyen solo como registro: conservan rutas de otros entornos
+> y nombres de experimentos intermedios. El análisis reproducible del TPF está en [`src/`](src/).
 
 > **Resumen.** El pronóstico a corto plazo del nivel de agua en arroyos urbanos es relevante para
 > la alerta temprana, porque una lluvia intensa puede producir una respuesta hidrológica rápida en
